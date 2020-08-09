@@ -31,20 +31,19 @@ exec --no-startup-id xss-lock --transfer-sleep-lock -- i3lock --nofork
 exec --no-startup-id nm-applet
 
 # Use pactl to adjust volume in PulseAudio.
-#set $refresh_i3status killall -SIGUSR1 i3status
+set $refresh_i3status killall -SIGUSR1 i3status
 
 # Use Mouse+$mod to drag floating windows to their wanted position
 floating_modifier $mod
 
 # start a terminal
 bindsym $mod+Return exec i3-sensible-terminal 
-bindsym $mod+Shift+Return exec i3-sensible-terminal -e exec 1> >(lolcat)
 # kill focused window
 bindsym $mod+Shift+q kill
 
 # start dmenu (a program launcher)
 #bindsym $mod+d exec rofi -show run -lines 3 -eh 1 -width 100 -padding 800 -bw 0 -color-window "#000000" -color-normal "#cc00ff" -color-urgent "#FF0000"
-bindsym $mod+d exec rofi -show combi 
+bindsym $mod+d exec rofi -show run 
 # There also is the (new) i3-dmenu-desktop which only displays applications
 # shipping a .desktop file. It is a wrapper around dmenu, so you need that
 # installed.
@@ -102,16 +101,16 @@ bindsym $mod+a focus parent
 
 # Define names for default workspaces for which we configure key bindings later on.
 # We use variables to avoid repeating the names in multiple places.
-set $ws1 ""
-set $ws2 ""
-set $ws3 ""
-set $ws4 ""
-set $ws5 ""
-set $ws6 ""
-set $ws7 " "
+set $ws1 "1:"
+set $ws2 "2:"
+set $ws3 "3:"
+set $ws4 "4:"
+set $ws5 "5:"
+set $ws6 "6:"
+set $ws7 "7: "
 set $ws8 "8: "
 set $ws9 "9: "
-set $ws10 ""
+set $ws10 "10:"
 
 # switch to workspace
 bindsym $mod+1 workspace $ws1
@@ -184,15 +183,15 @@ bindsym $mod+r mode "resize"
 
 # Start i3bar to display a workspace bar (plus the system information i3status
 # finds out, if available)
-#bar {    
-#	status_command ./.config/polybar/launch.sh    
-#	font pango:Font Awesome 5 Free 12
-#	#status_command i3blocks -c ~/i3/i3blocks.conf
-#	colors{
-#		background "#20201d"		
-#	}
-#	position top
-#}
+bar {    
+	status_command i3status    
+	font pango:Font Awesome 5 Free 12
+	#status_command i3blocks -c ~/i3/i3blocks.conf
+	colors{
+		background "#333333"		
+	}
+	position top
+}
 bindsym $mod+Shift+x exec lock.sh
 bindsym $mod+Shift+f exec firefox
 bindsym $mod+Shift+g exec firefox mail.google.com
@@ -208,21 +207,34 @@ assign [class="discord"] $ws5
 assign [class="Spotify"] $ws4
 assign [class="Gimp"] $ws6
 assign [class="Steam"] $ws7
-assign [class="cura"] $ws8
 
 new_window 1pixel
 
-bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume 0 +1% #increase sound volume
-bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume 0 -1% #decrease sound volume
+# Pulse Audio controls
+bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume 0 +5% #increase sound volume
+bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume 0 -5% #decrease sound volume
 bindsym XF86AudioMute exec --no-startup-id pactl set-sink-mute 0 toggle # mute sound
 
-exec_always ./.config/polybar/launch.sh
-#exec_always amixer -D pulse sset Master toggle
-exec_always --no-startup-id i3-msg 'workspace ; exec i3-sensible-terminal -e gotop'
+
+
+
+# Sreen brightness controls
+bindsym XF86MonBrightnessUp exec brightnessctl set 25+
+bindsym XF86MonBrightnessDown exec brightnessctl set 25-
+
+# Touchpad controls
+bindsym XF86TouchpadToggle exec toggletouchpad.sh # toggle touchpad
+
+# Media player controls
+bindsym XF86AudioPlay exec playerctl play-pause
+bindsym XF86AudioNext exec playerctl next
+bindsym XF86AudioPrev exec playerctl previous
+
+
+
+exec_always xrandr --output eDP-1 --scale 1.333x1.333
+exec_always amixer -D pulse sset Master toggle
+exec_always --no-startup-id i3-msg 'workspace 10:; exec i3-sensible-terminal -e gotop'
+exec_always --no-startup-id i3-msg 'workspace 10:; exec i3-sensible-terminal -e bashtop'
 exec_always feh --bg-scale /home/vsadygv/Downloads/wallpaper.jpg
-exec_always xrandr --output DisplayPort-0 --scale 1.333333x1.333333
-exec_always xrandr --output DisplayPort-0 --mode 2560x1440 --rate 74.97
-#exec_always xrandr --newmode "1920x1080_75.00"  220.64  1920 2056 2264 2608  1080 1081 1084 1128  -HSync +Vsync
-#exec_always xrandr --addmode DisplayPort-0 1920x1080_75.00
-#exec_always xrandr --output DisplayPort-0 --mode 1920x1080_75.00
 exec_always picom -f --config ~/i3/picom.conf
