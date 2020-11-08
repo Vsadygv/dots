@@ -34,3 +34,4 @@ colorscheme zellner
 "colorscheme molokai
 "colorscheme koehler
 "set background=dark
+"https://blog.siddharthkannan.in/vim/2019/08/31/compiling-vim-with-python/
