@@ -110,7 +110,7 @@ set $ws6 "6:"
 set $ws7 "7: "
 set $ws8 "8: "
 set $ws9 "9: "
-set $ws10 "10:"
+set $ws10 "10"
 
 # switch to workspace
 bindsym $mod+1 workspace $ws1
@@ -183,23 +183,22 @@ bindsym $mod+r mode "resize"
 
 # Start i3bar to display a workspace bar (plus the system information i3status
 # finds out, if available)
-bar {    
-	status_command i3status    
-	font pango:Font Awesome 5 Free 12
+#bar {    
+#	status_command ./~/.config/polybar/launch.sh    
+#	font pango:Font Awesome 5 Free 12
 	#status_command i3blocks -c ~/i3/i3blocks.conf
-	colors{
-		background "#333333"		
-	}
-	position top
-}
+#	colors{
+#		background "#333333"		
+#	}
+#	position top
+#}
 bindsym $mod+Shift+x exec lock.sh
-bindsym $mod+Shift+f exec firefox
-bindsym $mod+Shift+g exec firefox mail.google.com
-bindsym $mod+q exec eclipse
+bindsym $mod+Shift+f exec brave-browser-nightly
+bindsym $mod+Shift+g exec protonmail-desktop
+bindsym $mod+q exec scrot
 bindsym $mod+Shift+d exec discord
 bindsym $mod+z exec i3-sensible-terminal -e ranger|lolcat
 bindsym $mod+g exec gimp
-
 
 assign [class="firefox"] $ws3
 assign [class="Eclipse"] $ws2
@@ -232,9 +231,12 @@ bindsym XF86AudioPrev exec playerctl previous
 
 
 
-exec_always xrandr --output eDP-1 --scale 1.333x1.333
-exec_always amixer -D pulse sset Master toggle
-exec_always --no-startup-id i3-msg 'workspace 10:; exec i3-sensible-terminal -e gotop'
-exec_always --no-startup-id i3-msg 'workspace 10:; exec i3-sensible-terminal -e bashtop'
-exec_always feh --bg-scale /home/vsadygv/Downloads/wallpaper.jpg
+exec_always alsamixer sset Master unmute
+exec_always xrandr --output DisplayPort-0 --mode 2560x1440 --rate 76
+exec_always amixer -D pulse sset Master 1
+exec_always --no-startup-id i3-msg 'workspace 10; exec i3-sensible-terminal -e gotop'
+exec_always --no-startup-id i3-msg 'workspace 10; exec i3-sensible-terminal -e bashtop'
+exec_always --no-startup-id i3-msg 'workspace 1:; exec protonmail-desktop'
+exec_always feh --bg-scale /home/vsadygv/Downloads/wallpaper.png
 exec_always picom -f --config ~/i3/picom.conf
+exec_always ./.config/polybar/launch.sh 
